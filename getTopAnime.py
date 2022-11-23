@@ -29,7 +29,6 @@ def getGenresFromAnime():
     global movieTags
     for i in movieLinks:
         driver.get(i)
-        time.sleep(1)
         genstring=""
         search=driver.find_elements(By.CLASS_NAME,'spaceit_pad')
         for element in search:
@@ -53,7 +52,6 @@ def getAnimeFromPage(page_number):
     global movieLinks
     url=base_url+str(page_number)
     driver.get(url)
-    time.sleep(1)
     #search=driver.find_elements(By.CLASS_NAME,'hoverinfo_trigger fl-l fs14 fw-b anime_ranking_h3')
     #find element by css selector
     search=driver.find_elements(By.CSS_SELECTOR,'.hoverinfo_trigger.fl-l.fs14.fw-b.anime_ranking_h3')
@@ -67,15 +65,22 @@ def getAnimeFromPage(page_number):
         movieName=np.append(movieName,name)
         movieLinks=np.append(movieLinks,href)
         currMovieID+=1
+def getTopAnime(num_entries):
+    for i in range(0,num_entries+50,50):
+        getAnimeFromPage(i)
 
 
-getAnimeFromPage(0)
-getGenresFromAnime()
+
+#getAnimeFromPage(0)
+#getGenresFromAnime()
 #sgetAnimeFromPage(0)
 #print the np arrays
 #create a dataframe out of the np arrays
+getTopAnime(13300)
+getGenresFromAnime()
 import pandas as pd
-df=pd.DataFrame({'movieID':movieID,'movieName':movieName,'movieLinks':movieLinks})
+df=pd.DataFrame({'movieID':movieID,'movieName':movieName,'movieLinks':movieLinks, 'movieTags':movieTags})
 #make movieID into type int
 df['movieID']=df['movieID'].astype(int)
-print((movieTags))
+#save df to a csv
+df.to_csv('topAnime.csv',index=False)

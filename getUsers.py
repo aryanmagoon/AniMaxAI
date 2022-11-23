@@ -13,7 +13,6 @@ users=[]
 def getUsers():
     global users
     driver.get('https://myanimelist.net/users.php')
-    time.sleep(1)
     search=driver.find_elements(By.CLASS_NAME,'borderClass')
     for element in search:
         soup=BeautifulSoup(element.get_attribute('innerHTML'),'html.parser')
@@ -24,7 +23,7 @@ def scrapeUsers():
     global users
     timewithoutchange=0
     prevlen=len(users)
-    while(timewithoutchange<50 or len(users)<100000):
+    while(timewithoutchange<50 and len(users)<100):
         getUsers()
         if(prevlen==len(users)):
             timewithoutchange+=1
@@ -42,7 +41,7 @@ scrapeUsers()
 import pickle
 def saveUsers():
     global users
-    with open('users.pickle','wb') as f:
+    with open('test.pickle','wb') as f:
         pickle.dump(users,f)
 def loadUsers():
     global users
